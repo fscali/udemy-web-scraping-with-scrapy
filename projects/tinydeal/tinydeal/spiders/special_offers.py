@@ -4,8 +4,13 @@ import scrapy
 class SpecialOffersSpider(scrapy.Spider):
     name = 'special_offers'
     allowed_domains = ['www.cigabuy.com']
-    start_urls = [
-        'https://www.cigabuy.com/builtin-battery-c-56_139.html']
+    # start_urls = [
+    #    'https://www.cigabuy.com/builtin-battery-c-56_139.html']
+
+    def start_requests(self):
+        yield scrapy.Request(url='https://www.cigabuy.com/builtin-battery-c-56_139.html', callback=self.parse, headers={
+            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
+        })
 
     def parse(self, response):
         product_boxes = response.xpath("//*[@class='p_box_wrapper']")
@@ -23,9 +28,12 @@ class SpecialOffersSpider(scrapy.Spider):
                 'title': title,
                 'normal_price': normal_price,
                 'discounted_price': discounted_price,
-                'url': url
+                'url': url,
+                'User-Agent': response.request.headers['User-Agent']
             }
         next_page = response.xpath(
             "(//a[@class='nextPage'])[position()=1]/@href").get()
         if next_page:
-            yield scrapy.Request(url=next_page, callback=self.parse)
+            yield scrapy.Request(url=next_page, callback=self.parse, headers={
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
+            })
