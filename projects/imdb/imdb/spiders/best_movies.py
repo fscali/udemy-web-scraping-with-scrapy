@@ -1,3 +1,4 @@
+import scrapy
 from scrapy.shell import inspect_response
 from scrapy.utils.response import open_in_browser
 from scrapy.linkextractors import LinkExtractor
@@ -7,14 +8,22 @@ from scrapy.spiders import CrawlSpider, Rule
 class BestMoviesSpider(CrawlSpider):
     name = 'best_movies'
     allowed_domains = ['imdb.com']
-    start_urls = ['https://www.imdb.com/chart/top/?ref_=nv_mv_250']
-    # //td[@class='titleColumn']/a
+    user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
+
+    def start_requests(self):
+        yield scrapy.Request(url='https://www.imdb.com/chart/top/?ref_=nv_mv_250', headers={
+            'User-Agent': self.user_agent
+        })
 
     rules = (
         #Rule(LinkExtractor(allow=r'Items/'), callback='parse_item', follow=True),
         Rule(LinkExtractor(
-            restrict_xpaths="//td[@class='titleColumn']/a"), callback='parse_item', follow=True),
+            restrict_xpaths="//td[@class='titleColumn']/a"), callback='parse_item', follow=True, process_request='set_user_agent'),
     )
+
+    def set_user_agent(self, request, spider):
+        request.headers['User-Agent'] = self.user_agent
+        return request
 
     def parse_start_url(self, response, **kwargs):
        # inspect_response(response, self)
@@ -38,5 +47,6 @@ class BestMoviesSpider(CrawlSpider):
         item['genre'] = genre
         item['rating'] = rating
         item['movie_url'] = response.url
+        item['user-agent'] = response.request.headers['User-Agent']
 
         return item
