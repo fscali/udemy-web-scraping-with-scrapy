@@ -47,6 +47,6 @@ class BestMoviesSpider(CrawlSpider):
         item['genre'] = genre
         item['rating'] = rating
         item['movie_url'] = response.url
-        item['user-agent'] = response.request.headers['User-Agent']
+        #item['user-agent'] = response.request.headers['User-Agent']
 
         return item
