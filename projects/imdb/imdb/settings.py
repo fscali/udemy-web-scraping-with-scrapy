@@ -63,7 +63,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-    'imdb.pipelines.MongodbPipeline': 300,
+    'imdb.pipelines.SQLlitePipeline': 300,
     # 'imdb.pipelines.FilterDuplicate': 100,
 }
 user = "testscrapy"
