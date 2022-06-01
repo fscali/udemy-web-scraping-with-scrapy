@@ -47,14 +47,7 @@ class LegabasketSpider(CrawlSpider):
     )
 
     def parse_item(self, response):
-        """  team_1 = response.xpath(
-            '(//span[@class="team-name"])[position()=1]/a/text()').get().strip()
-        team_2 = response.xpath(
-            '(//span[@class="team-name"])[position()=2]/a/text()').get().strip()
-        score_1 = response.xpath(
-            '//span[@id="home-score"]/text()').get().strip()
-        score_2 = response.xpath(
-            '//span[@id="visitor-score"]/text()').get().strip() """
+
         l = LegaBasketItemLoader(item=LegaBasketItem(), response=response)
         l.add_xpath(
             'team1', '(//span[@class="team-name"])[position()=1]/a/text()')
@@ -63,9 +56,3 @@ class LegabasketSpider(CrawlSpider):
         l.add_xpath('score', '//span[@id="home-score"]/text()')
         l.add_xpath('score', '//span[@id="visitor-score"]/text()')
         yield l.load_item()
-
-        """  yield {
-            "team1": team_1,
-            "team2": team_2,
-            "score": f'{score_1} - {score_2}'}
- """
