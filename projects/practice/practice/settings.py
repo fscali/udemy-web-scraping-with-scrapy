@@ -100,3 +100,5 @@ FEEDS = {
         'gzip_compresslevel': 5,
     }
 }
+LOG_FILE = "/tmp/scrapy.log"
+LOG_LEVEL = 'ERROR'  # to only display errors
